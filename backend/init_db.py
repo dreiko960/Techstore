@@ -1,0 +1,329 @@
+import json
+import sys
+import os
+
+# Add the parent directory to sys.path to be able to import from backend
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from backend.database import SessionLocal, engine
+from backend import models
+
+models.Base.metadata.create_all(bind=engine)
+
+# Data from mockData.ts
+categories = [
+  { "id": "1", "name": "Laptops Gaming", "icon": "Laptop", "productCount": 45 },
+  { "id": "2", "name": "PCs Gamer", "icon": "Monitor", "productCount": 32 },
+  { "id": "3", "name": "Tarjetas Gráficas", "icon": "Cpu", "productCount": 28 },
+  { "id": "4", "name": "Monitores", "icon": "MonitorSpeaker", "productCount": 52 },
+  { "id": "5", "name": "Teclados", "icon": "Keyboard", "productCount": 67 },
+  { "id": "6", "name": "Mouse Gaming", "icon": "Mouse", "productCount": 74 },
+  { "id": "7", "name": "Auriculares", "icon": "Headphones", "productCount": 58 },
+  { "id": "8", "name": "Accesorios", "icon": "Gamepad2", "productCount": 89 },
+]
+
+products = [
+  {
+    "id": "1",
+    "name": "ASUS ROG Zephyrus G14",
+    "description": "Laptop gaming ultra portátil con AMD Ryzen 9 y RTX 4060",
+    "price": 1899,
+    "originalPrice": 2299,
+    "discount": 17,
+    "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800",
+    "images": [
+      "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800",
+      "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800",
+    ],
+    "category": "Laptops Gaming",
+    "brand": "ASUS",
+    "stock": 12,
+    "rating": 4.8,
+    "reviews": 234,
+    "sku": "ROG-G14-2024",
+    "isNew": True,
+    "isFeatured": True,
+    "specifications": {
+      "Procesador": "AMD Ryzen 9 7940HS",
+      "GPU": "NVIDIA GeForce RTX 4060",
+      "RAM": "16GB DDR5",
+      "Almacenamiento": "1TB NVMe SSD",
+      "Pantalla": "14\" QHD 165Hz",
+      "Batería": "76Wh",
+    },
+  },
+  {
+    "id": "2",
+    "name": "MSI GeForce RTX 4090 Gaming X Trio",
+    "description": "Tarjeta gráfica tope de gama con 24GB GDDR6X",
+    "price": 1799,
+    "originalPrice": 1999,
+    "discount": 10,
+    "image": "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=800",
+    "category": "Tarjetas Gráficas",
+    "brand": "MSI",
+    "stock": 5,
+    "rating": 4.9,
+    "reviews": 412,
+    "sku": "RTX4090-TRIO",
+    "isNew": True,
+    "isFeatured": True,
+    "specifications": {
+      "GPU": "NVIDIA GeForce RTX 4090",
+      "VRAM": "24GB GDDR6X",
+      "Boost Clock": "2640 MHz",
+      "Conectores": "3x DisplayPort, 1x HDMI",
+      "TDP": "450W",
+    },
+  },
+  {
+    "id": "3",
+    "name": "Logitech G Pro X Superlight",
+    "description": "Mouse gaming inalámbrico profesional ultra ligero",
+    "price": 149,
+    "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800",
+    "category": "Mouse Gaming",
+    "brand": "Logitech",
+    "stock": 34,
+    "rating": 4.7,
+    "reviews": 892,
+    "sku": "GPRO-SUPERLIGHT",
+    "isFeatured": True,
+    "specifications": {
+      "Sensor": "HERO 25K",
+      "DPI": "100-25,600",
+      "Peso": "63g",
+      "Batería": "70 horas",
+      "Conectividad": "Wireless LIGHTSPEED",
+    },
+  },
+  {
+    "id": "4",
+    "name": "Samsung Odyssey G7 32\"",
+    "description": "Monitor curvo gaming QLED 240Hz con G-Sync",
+    "price": 699,
+    "originalPrice": 849,
+    "discount": 18,
+    "image": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=800",
+    "category": "Monitores",
+    "brand": "Samsung",
+    "stock": 18,
+    "rating": 4.6,
+    "reviews": 567,
+    "sku": "ODY-G7-32",
+    "specifications": {
+      "Tamaño": "32 pulgadas",
+      "Resolución": "2560x1440 (QHD)",
+      "Tasa de refresco": "240Hz",
+      "Panel": "VA curvo 1000R",
+      "HDR": "HDR600",
+      "Tiempo de respuesta": "1ms",
+    },
+  },
+  {
+    "id": "5",
+    "name": "Corsair K70 RGB Pro",
+    "description": "Teclado mecánico gaming con switches Cherry MX",
+    "price": 169,
+    "image": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=800",
+    "category": "Teclados",
+    "brand": "Corsair",
+    "stock": 42,
+    "rating": 4.5,
+    "reviews": 723,
+    "sku": "K70-RGB-PRO",
+    "specifications": {
+      "Switches": "Cherry MX Red",
+      "Iluminación": "RGB por tecla",
+      "Conexión": "USB-C desmontable",
+      "Reposamuñecas": "Magnético incluido",
+      "Teclas multimedia": "Dedicadas",
+    },
+  },
+  {
+    "id": "6",
+    "name": "HyperX Cloud Alpha Wireless",
+    "description": "Auriculares gaming inalámbricos con 300h de batería",
+    "price": 199,
+    "originalPrice": 249,
+    "discount": 20,
+    "image": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800",
+    "category": "Auriculares",
+    "brand": "HyperX",
+    "stock": 27,
+    "rating": 4.7,
+    "reviews": 634,
+    "sku": "ALPHA-WIRELESS",
+    "isNew": True,
+    "specifications": {
+      "Drivers": "50mm duales",
+      "Batería": "300 horas",
+      "Conectividad": "Wireless 2.4GHz",
+      "Micrófono": "Desmontable con cancelación de ruido",
+      "Audio": "DTS Headphone:X",
+    },
+  },
+  {
+    "id": "7",
+    "name": "Intel Core i9-14900K",
+    "description": "Procesador de 24 núcleos para gaming extremo",
+    "price": 589,
+    "image": "https://images.unsplash.com/photo-1555617981-dac3880eac6e?w=800",
+    "category": "Accesorios",
+    "brand": "Intel",
+    "stock": 15,
+    "rating": 4.8,
+    "reviews": 289,
+    "sku": "I9-14900K",
+    "isNew": True,
+    "specifications": {
+      "Núcleos": "24 (8P + 16E)",
+      "Frecuencia base": "3.2 GHz",
+      "Frecuencia turbo": "6.0 GHz",
+      "Cache": "36MB",
+      "TDP": "125W (253W turbo)",
+    },
+  },
+  {
+    "id": "8",
+    "name": "Razer BlackWidow V4 Pro",
+    "description": "Teclado mecánico con pantalla OLED y control de volumen",
+    "price": 229,
+    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800",
+    "category": "Teclados",
+    "brand": "Razer",
+    "stock": 31,
+    "rating": 4.6,
+    "reviews": 445,
+    "sku": "BW-V4-PRO",
+    "isFeatured": True,
+    "specifications": {
+      "Switches": "Razer Green Mechanical",
+      "Pantalla": "OLED integrada",
+      "Control": "Dial multifunción",
+      "Iluminación": "Razer Chroma RGB",
+      "Conectividad": "Dual USB-C",
+    },
+  }
+]
+
+brands = [
+  { "name": "ASUS", "logo": "https://via.placeholder.com/120x60/1e293b/0ea5e9?text=ASUS" },
+  { "name": "MSI", "logo": "https://via.placeholder.com/120x60/1e293b/0ea5e9?text=MSI" },
+  { "name": "Logitech", "logo": "https://via.placeholder.com/120x60/1e293b/0ea5e9?text=Logitech" },
+  { "name": "Corsair", "logo": "https://via.placeholder.com/120x60/1e293b/0ea5e9?text=Corsair" },
+  { "name": "Razer", "logo": "https://via.placeholder.com/120x60/1e293b/0ea5e9?text=Razer" },
+  { "name": "HyperX", "logo": "https://via.placeholder.com/120x60/1e293b/0ea5e9?text=HyperX" },
+  { "name": "Samsung", "logo": "https://via.placeholder.com/120x60/1e293b/0ea5e9?text=Samsung" },
+  { "name": "Intel", "logo": "https://via.placeholder.com/120x60/1e293b/0ea5e9?text=Intel" },
+]
+
+users = [
+    {
+        "id": "1",
+        "name": "Administrador",
+        "email": "admin@ejemplo.com",
+        "password": "admin",
+        "role": "admin"
+    },
+    {
+        "id": "2",
+        "name": "Cliente Prueba",
+        "email": "cliente@ejemplo.com",
+        "password": "123",
+        "role": "customer"
+    }
+]
+
+from datetime import datetime
+
+orders = [
+    {
+        "id": "ORD-001",
+        "date": datetime.utcnow(),
+        "customerName": "Juan Pérez",
+        "customerEmail": "juan@example.com",
+        "customerPhone": "555-1234",
+        "customerAddress": "Calle Falsa 123, Madrid, 28001",
+        "subtotal": 1899,
+        "discount": 0,
+        "shipping": 0,
+        "total": 1899,
+        "status": "delivered",
+        "paymentMethod": "Tarjeta de Crédito"
+    },
+    {
+        "id": "ORD-002",
+        "date": datetime.utcnow(),
+        "customerName": "María García",
+        "customerEmail": "maria@example.com",
+        "customerPhone": "555-5678",
+        "customerAddress": "Avenida Siempre Viva 742, Barcelona, 08001",
+        "subtotal": 149,
+        "discount": 0,
+        "shipping": 25,
+        "total": 174,
+        "status": "processing",
+        "paymentMethod": "PayPal"
+    }
+]
+
+order_items = [
+    {
+        "order_id": "ORD-001",
+        "product_id": "1",
+        "quantity": 1,
+        "price": 1899
+    },
+    {
+        "order_id": "ORD-002",
+        "product_id": "3",
+        "quantity": 1,
+        "price": 149
+    }
+]
+
+def init_db():
+    db = SessionLocal()
+    
+    # Check if data already exists
+    if db.query(models.Product).first():
+        print("Database already contains data. Skipping initialization.")
+        return
+
+    # Add categories
+    for cat in categories:
+        db_cat = models.Category(**cat)
+        db.add(db_cat)
+
+    # Add products
+    for prod in products:
+        db_prod = models.Product(**prod)
+        db.add(db_prod)
+        
+    # Add brands
+    for brand in brands:
+        db_brand = models.Brand(**brand)
+        db.add(db_brand)
+
+    # Add users
+    for user in users:
+        db_user = models.User(**user)
+        db.add(db_user)
+
+    # Add orders
+    for order in orders:
+        db_order = models.Order(**order)
+        db.add(db_order)
+
+    # Add order items
+    for item in order_items:
+        db_item = models.OrderItem(**item)
+        db.add(db_item)
+
+    db.commit()
+    db.close()
+    print("Database initialized with mock data!")
+
+if __name__ == "__main__":
+    init_db()
