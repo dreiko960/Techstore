@@ -180,3 +180,8 @@ def update_order(order_id: str, update: OrderUpdate, db: Session = Depends(get_d
     db.commit()
     db.refresh(db_order)
     return db_order
+
+if __name__ == "__main__":
+    import uvicorn
+    # host="0.0.0.0" permite que el servidor escuche en la IP 192.168.1.41
+    uvicorn.run(app, host="0.0.0.0", port=8000)
