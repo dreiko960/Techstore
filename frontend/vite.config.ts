@@ -33,4 +33,11 @@ export default defineConfig({
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
+
+  // Configuración necesaria para permitir el túnel de Ngrok
+  server: {
+    allowedHosts: [
+      'street-sizably-fencing.ngrok-free.dev'
+    ]
+  }
 })
