@@ -5,6 +5,7 @@ import { GlassCard } from '../../components/ui/GlassCard';
 import { Input } from '../../components/ui/Input';
 import { Badge } from '../../components/ui/Badge';
 import { NeonButton } from '../../components/ui/NeonButton';
+import { API_URL } from '../../../config';
 
 export function Orders() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,7 +18,7 @@ export function Orders() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/orders');
+      const res = await fetch(`${API_URL}/api/orders`);
       const data = await res.json();
       const formattedOrders = data.map((o: any) => ({
         ...o,
@@ -40,7 +41,7 @@ export function Orders() {
   const handleDelete = async (id: string) => {
     if (confirm("¿Estás seguro de eliminar este pedido?")) {
       try {
-        await fetch(`http://localhost:8000/api/orders/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/api/orders/${id}`, { method: 'DELETE' });
         fetchOrders();
       } catch (error) {
         console.error("Error deleting order:", error);
@@ -60,7 +61,7 @@ export function Orders() {
     };
 
     try {
-      await fetch(`http://localhost:8000/api/orders/${editingOrder.id}`, {
+      await fetch(`${API_URL}/api/orders/${editingOrder.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData)
@@ -171,7 +172,7 @@ export function Orders() {
                       onChange={async (e) => {
                         const newStatus = e.target.value;
                         try {
-                          await fetch(`http://localhost:8000/api/orders/${order.id}/status`, {
+                          await fetch(`${API_URL}/api/orders/${order.id}/status`, {
                             method: 'PATCH',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ status: newStatus })

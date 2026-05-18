@@ -5,7 +5,9 @@ import { CreditCard, Truck, MapPin } from 'lucide-react';
 import { GlassCard } from '../components/ui/GlassCard';
 import { Input } from '../components/ui/Input';
 import { NeonButton } from '../components/ui/NeonButton';
+import { NeonButton } from '../components/ui/NeonButton';
 import { useStore } from '../context/StoreContext';
+import { API_URL } from '../../config';
 
 export function Checkout() {
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ export function Checkout() {
     };
 
     try {
-      const response = await fetch('http://localhost:8000/api/orders', {
+      const response = await fetch(`${API_URL}/api/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

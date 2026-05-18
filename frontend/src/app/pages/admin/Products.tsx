@@ -5,6 +5,7 @@ import { GlassCard } from '../../components/ui/GlassCard';
 import { NeonButton } from '../../components/ui/NeonButton';
 import { Input } from '../../components/ui/Input';
 import { Badge } from '../../components/ui/Badge';
+import { API_URL } from '../../../config';
 
 // Eliminamos mockData
 // import { products } from '../../data/mockData';
@@ -20,7 +21,7 @@ export function Products() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/products');
+      const res = await fetch(`${API_URL}/api/products`);
       const data = await res.json();
       setProducts(data);
     } catch (error) {
@@ -54,13 +55,13 @@ export function Products() {
 
     try {
       if (editingProduct) {
-        await fetch(`http://localhost:8000/api/products/${editingProduct.id}`, {
+        await fetch(`${API_URL}/api/products/${editingProduct.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(productData)
         });
       } else {
-        await fetch('http://localhost:8000/api/products', {
+        await fetch(`${API_URL}/api/products`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(productData)
@@ -77,7 +78,7 @@ export function Products() {
   const handleDelete = async (id: string) => {
     if (confirm("¿Estás seguro de eliminar este producto?")) {
       try {
-        await fetch(`http://localhost:8000/api/products/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/api/products/${id}`, { method: 'DELETE' });
         fetchProducts();
       } catch (error) {
         console.error("Error deleting product:", error);
