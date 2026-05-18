@@ -5,7 +5,6 @@ import { CreditCard, Truck, MapPin } from 'lucide-react';
 import { GlassCard } from '../components/ui/GlassCard';
 import { Input } from '../components/ui/Input';
 import { NeonButton } from '../components/ui/NeonButton';
-import { NeonButton } from '../components/ui/NeonButton';
 import { useStore } from '../context/StoreContext';
 import { API_URL } from '../../config';
 
