@@ -18,7 +18,9 @@ export function Orders() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/orders`);
+      const res = await fetch(`${API_URL}/api/orders`, {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
       const data = await res.json();
       const formattedOrders = data.map((o: any) => ({
         ...o,
@@ -41,7 +43,10 @@ export function Orders() {
   const handleDelete = async (id: string) => {
     if (confirm("¿Estás seguro de eliminar este pedido?")) {
       try {
-        await fetch(`${API_URL}/api/orders/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/api/orders/${id}`, { 
+          method: 'DELETE',
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
         fetchOrders();
       } catch (error) {
         console.error("Error deleting order:", error);
@@ -63,7 +68,7 @@ export function Orders() {
     try {
       await fetch(`${API_URL}/api/orders/${editingOrder.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
         body: JSON.stringify(updateData)
       });
       setShowModal(false);
@@ -174,7 +179,7 @@ export function Orders() {
                         try {
                           await fetch(`${API_URL}/api/orders/${order.id}/status`, {
                             method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
                             body: JSON.stringify({ status: newStatus })
                           });
                           fetchOrders();

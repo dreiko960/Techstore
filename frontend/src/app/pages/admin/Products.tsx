@@ -21,7 +21,9 @@ export function Products() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/products`);
+      const res = await fetch(`${API_URL}/api/products`, {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
       const data = await res.json();
       setProducts(data);
     } catch (error) {
@@ -57,13 +59,13 @@ export function Products() {
       if (editingProduct) {
         await fetch(`${API_URL}/api/products/${editingProduct.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
           body: JSON.stringify(productData)
         });
       } else {
         await fetch(`${API_URL}/api/products`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
           body: JSON.stringify(productData)
         });
       }
@@ -78,7 +80,10 @@ export function Products() {
   const handleDelete = async (id: string) => {
     if (confirm("¿Estás seguro de eliminar este producto?")) {
       try {
-        await fetch(`${API_URL}/api/products/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/api/products/${id}`, { 
+          method: 'DELETE',
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
         fetchProducts();
       } catch (error) {
         console.error("Error deleting product:", error);
