@@ -36,12 +36,10 @@ export default defineConfig({
 
   // Configuración necesaria para permitir el túnel de Ngrok y el proxy del backend
   server: {
-    allowedHosts: [
-      'street-sizably-fencing.ngrok-free.dev'
-    ],
+    allowedHosts: 'all',
     proxy: {
       '/api': {
-        target: 'http://172.28.40.113:8000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       }
