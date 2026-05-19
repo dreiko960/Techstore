@@ -36,7 +36,9 @@ export default defineConfig({
 
   // Configuración necesaria para permitir el túnel de Ngrok y el proxy del backend
   server: {
+    host: true,
     allowedHosts: 'all',
+    cors: true,
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
